@@ -14,7 +14,7 @@ jobs:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
       - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@0.7
+        uses: ros-tooling/action-ros-ci@0.4.3
         with:
           package-name: turtlebot4_cpp_tutorials
           target-ros2-distro: jazzy

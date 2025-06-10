@@ -25,8 +25,11 @@ ament_target_dependencies(turtlebot4_first_cpp_node rclcpp)
 #target_link_libraries(turtlebot4_first_cpp_node libusb-1.0)
 
 # Can we link to the gtec API
+# I've not got this working properly. Hack with an absolute path works locally for me.
 link_directories(AFTER ./)
-target_link_libraries(turtlebot4_first_cpp_node libgusbampapiso64.so.1.11.00)
+target_link_libraries(turtlebot4_first_cpp_node /ros2_ws/src/sense_eeg_cpp/libgusbampapiso64.so.1.11.00)
+
+#target_link_libraries(turtlebot4_first_cpp_node libgusbampapiso64.so.1.11.00)
 
 target_include_directories(turtlebot4_first_cpp_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

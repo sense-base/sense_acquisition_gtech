@@ -21,9 +21,12 @@ add_executable(turtlebot4_first_cpp_node src/turtlebot4_first_cpp_node.cpp)
 ament_target_dependencies(turtlebot4_first_cpp_node rclcpp)
 
 # this is testing if we can link to libusb. Maybe not necessary.
-link_directories(AFTER /usr/lib/x86_64-linux-gnu/)
-target_link_libraries(turtlebot4_first_cpp_node libusb-1.0)
+#link_directories(AFTER /usr/lib/x86_64-linux-gnu/)
+#target_link_libraries(turtlebot4_first_cpp_node libusb-1.0)
 
+# Can we link to the gtec API
+link_directories(AFTER ./)
+target_link_libraries(turtlebot4_first_cpp_node libgusbampapiso64.so.1.11.00)
 
 target_include_directories(turtlebot4_first_cpp_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

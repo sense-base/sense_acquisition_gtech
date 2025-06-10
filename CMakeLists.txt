@@ -18,7 +18,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
 add_executable(turtlebot4_first_cpp_node src/turtlebot4_first_cpp_node.cpp)
-ament_target_dependencies(turtlebot4_first_cpp_node rclcpp libusb)
+ament_target_dependencies(turtlebot4_first_cpp_node rclcpp)
 
 # this is testing if we can link to libusb. Maybe not necessary.
 link_directories(AFTER /usr/lib/x86_64-linux-gnu/)

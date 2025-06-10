@@ -5,16 +5,25 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
+# Download some of our dependencies
+file(DOWNLOAD https://github.com/BrainTech/openbci/raw/refs/heads/master/obci/drivers/eeg/cpp_amplifiers/gtec/api/libgusbampapiso64.so.1.11.00 libgusbampapiso64.so.1.11.00)
+
+file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7/libboost_date_time.so.1.58.0 libboost_date_time.so.1.58.0)
+
 # find dependencies
 find_package(ament_cmake REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(libusb REQUIRED)
 
 add_executable(turtlebot4_first_cpp_node src/turtlebot4_first_cpp_node.cpp)
 ament_target_dependencies(turtlebot4_first_cpp_node rclcpp libusb)
+
+# this is testing if we can link to libusb. Maybe not necessary.
+link_directories(AFTER /usr/lib/x86_64-linux-gnu/)
+target_link_libraries(turtlebot4_first_cpp_node libusb-1.0)
+
 
 target_include_directories(turtlebot4_first_cpp_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

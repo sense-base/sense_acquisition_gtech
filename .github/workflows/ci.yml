@@ -13,6 +13,9 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
+      - name: Get Dependencies
+	run: |
+	  curl -H 'Accept: application/vnd.github.v3.raw' -O -L https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@0.4.3
         with:

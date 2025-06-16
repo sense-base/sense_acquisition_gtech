@@ -16,5 +16,5 @@ jobs:
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@0.4.3
         with:
-          package-name: turtlebot4_cpp_tutorials
+          package-name: sense_eeg
           target-ros2-distro: jazzy

@@ -21,8 +21,6 @@ jobs:
         uses: ros-tooling/action-ros-ci@0.4.3
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
-          GTEC_TOKEN_H: ${{ secrets.GTEC_TOKEN_H }}
-          GTEC_TOKEN_SO: ${{ secrets.GTEC_TOKEN_SO }}
         with:
           package-name: sense_eeg
           target-ros2-distro: jazzy

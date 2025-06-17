@@ -12,7 +12,7 @@ add_executable(sense_eeg main.cpp)
 # Download some of our dependencies
 # we'll need to update this to the newer API, but need sort out how to handle downloads first
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
 list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
@@ -24,7 +24,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of main.cpp: ${ERROR_MESSAGE}")
 endif()
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h?token=$ENV{GTEC_TOKEN_H} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 	
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
@@ -37,7 +37,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
 endif()
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN_SO} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)

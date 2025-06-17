@@ -15,6 +15,8 @@ add_executable(sense_eeg main.cpp)
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} main.cpp)
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h)
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
+file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16)
+file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so)
 # put the boost dependencies for libgusbampapiso64 in the same directory
 file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7/libboost_date_time.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_date_time.so.1.58.0)
 file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7/libboost_regex.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_regex.so.1.58.0)

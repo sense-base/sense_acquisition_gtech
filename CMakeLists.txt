@@ -38,7 +38,7 @@ ament_target_dependencies(sense_eeg rclcpp)
 # Can we link to the gtec API
 # I've not got this working properly. Hack with an absolute path works locally for me.
 link_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI)
-target_link_libraries(sense_eeg ${CMAKE_CURRENT_SOURCE_DIR}gUSBampAPI/libgusbampapiso64.so.1.16.01)
+target_link_libraries(sense_eeg ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgusbampapiso64.so.1.16.01)
 
 #target_link_libraries(sense_eeg libgusbampapiso64.so.1.11.00)
 

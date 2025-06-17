@@ -12,8 +12,31 @@ add_executable(sense_eeg main.cpp)
 # Download some of our dependencies
 # we'll need to update this to the newer API, but need sort out how to handle downloads first
 
-file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h)
+file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp STATUS DOWNLOAD_STATUS)
+# Separate the returned status code, and error message.
+list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+# Check if download was successful.
+if(${STATUS_CODE} EQUAL 0)
+  message(STATUS "main.cpp download completed successfully!")
+else()
+  # Exit CMake if the download failed, printing the error message.
+  message(FATAL_ERROR "Error occurred during download of main.cpp: ${ERROR_MESSAGE}")
+endif()
+
+file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h STATUS DOWNLOAD_STATUS)
+	
+# Separate the returned status code, and error message.
+list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+# Check if download was successful.
+if(${STATUS_CODE} EQUAL 0)
+	message(STATUS "gAPI.h download completed successfully!")
+else()
+  # Exit CMake if the download failed, printing the error message.
+  message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
+endif()
+
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16)
 file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so)

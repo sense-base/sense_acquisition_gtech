@@ -13,6 +13,10 @@ add_executable(sense_eeg main.cpp)
 # we'll need to update this to the newer API, but need sort out how to handle downloads first
 file(DOWNLOAD https://github.com/BrainTech/openbci/raw/refs/heads/master/obci/drivers/eeg/cpp_amplifiers/gtec/api/libgusbampapiso64.so.1.11.00 gUSBampAPI/libgusbampapiso64.so.1.11.00)
 
+# file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp main.cpp)
+
+#file(DOWNLOAD https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/main/gUSBamp_Demo_1_16_01/main.cpp)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} main.cpp)
 # put the boost dependencies for libgusbampapiso64 in the same directory
 file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7/libboost_date_time.so.1.58.0 gUSBampAPI/libboost_date_time.so.1.58.0)
 file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7/libboost_regex.so.1.58.0 gUSBampAPI/libboost_regex.so.1.58.0)

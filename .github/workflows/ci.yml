@@ -24,3 +24,9 @@ jobs:
         with:
           package-name: sense_eeg
           target-ros2-distro: jazzy
+          colcon-defaults: |
+            {
+              "build": {
+              "mixin": ["coverage-gcc"]
+              }
+            }

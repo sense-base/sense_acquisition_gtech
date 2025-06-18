@@ -18,6 +18,9 @@ jobs:
           curl -H 'Accept: application/vnd.github.v3.raw' -O -L https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@0.4.3
+        # add an environment variable containing a personal access token for
+        # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
+        # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:

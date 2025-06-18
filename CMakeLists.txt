@@ -12,9 +12,9 @@ add_executable(sense_eeg main.cpp)
 # Download some of our dependencies
 
 set(GTEC_API_LOCATION https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main)
-file(DOWNLOAD 
-  ${GTEC_API_LOCATION}/gUSBamp_Demo_1_16_01/main.cpp 
-  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp 
+file(DOWNLOAD
+  ${GTEC_API_LOCATION}/gUSBamp_Demo_1_16_01/main.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
@@ -27,9 +27,9 @@ else()
   message(FATAL_ERROR "Error occurred during download of main.cpp: ${ERROR_MESSAGE}")
 endif()
 
-file(DOWNLOAD 
-  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/gAPI.h 
-  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h 
+file(DOWNLOAD
+  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/gAPI.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
@@ -59,7 +59,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of libgUSBampAPIso.so.1.16.01: ${ERROR_MESSAGE}")
 endif()
 
-file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 
+file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01
   ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16 SYMBOLIC)
 
 file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01

@@ -10,9 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_executable(sense_eeg main.cpp)
 # Download some of our dependencies
-# we'll need to update this to the newer API, but need sort out how to handle downloads first
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp?token=$ENV{GTEC_TOKEN} ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
 list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
@@ -24,7 +23,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of main.cpp: ${ERROR_MESSAGE}")
 endif()
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h?token=$ENV{GTEC_TOKEN_H} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/gAPI.h ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 	
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
@@ -37,7 +36,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
 endif()
 
-file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01?token=$ENV{GTEC_TOKEN_SO} ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 STATUS DOWNLOAD_STATUS)
+file(DOWNLOAD https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
 list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
@@ -50,7 +49,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of libgUSBampAPIso.so.1.16.01: ${ERROR_MESSAGE}")
 endif()
 
-file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16i SYMBOLIC)
+file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16 SYMBOLIC)
 
 file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so SYMBOLIC)
 
@@ -63,23 +62,16 @@ file(DOWNLOAD https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
-find_package(rclcpp REQUIRED)
 
 ament_target_dependencies(sense_eeg rclcpp)
 
-# this is testing if we can link to libusb. Maybe not necessary.
-#link_directories(AFTER /usr/lib/x86_64-linux-gnu/)
-#target_link_libraries(turtlebot4_first_cpp_node libusb-1.0)
-
-# Can we link to the gtec API
-# I've not got this working properly. Hack with an absolute path works locally for me.
+# Link to the gtec API
 link_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI)
 target_link_libraries(sense_eeg ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
-
-#target_link_libraries(sense_eeg libgusbampapiso64.so.1.11.00)
 
 target_include_directories(sense_eeg PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

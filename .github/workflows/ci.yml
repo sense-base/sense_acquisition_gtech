@@ -1,8 +1,8 @@
 name: CI
 
 on:
-  workflow_dispatch:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -14,15 +14,13 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
     steps:
-      - name: Get Dependencies
-        run: |
-          curl -H 'Accept: application/vnd.github.v3.raw' -O -L https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main/gUSBamp_Demo_1_16_01/main.cpp
       - name: Build and run tests
         uses: ros-tooling/action-ros-ci@0.4.3
+        # add an environment variable containing a personal access token for
+        # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
+        # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
-          GTEC_TOKEN_H: ${{ secrets.GTEC_TOKEN_H }}
-          GTEC_TOKEN_SO: ${{ secrets.GTEC_TOKEN_SO }}
         with:
           package-name: sense_eeg
           target-ros2-distro: jazzy

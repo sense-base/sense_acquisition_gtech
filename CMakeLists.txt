@@ -51,6 +51,40 @@ file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.
 file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01
   ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so SYMBOLIC)
 
+# install the filter data files.
+file(MAKE_DIRECTORY /etc/gtec/filter_files)
+file(DOWNLOAD
+  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPfilter.bin 
+  /etc/gtec/filter_files/DSPfilter.bin 
+  STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
+
+# Separate the returned status code, and error message.
+list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+# Check if download was successful.
+if(${STATUS_CODE} EQUAL 0)
+  message(STATUS "gAPI.h download completed successfully!")
+else()
+  # Exit CMake if the download failed, printing the error message.
+  message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
+endif()
+
+file(DOWNLOAD
+	${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPNotchfilter.bin 
+	/etc/gtec/filter_files/DSPNotchfilter.bin 
+  STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
+
+# Separate the returned status code, and error message.
+list(GET DOWNLOAD_STATUS 0 STATUS_CODE)
+list(GET DOWNLOAD_STATUS 1 ERROR_MESSAGE)
+# Check if download was successful.
+if(${STATUS_CODE} EQUAL 0)
+  message(STATUS "gAPI.h download completed successfully!")
+else()
+  # Exit CMake if the download failed, printing the error message.
+  message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
+endif()
+
 # put the boost dependencies for libgusbampapiso64 in the same directory
 set(BOOST_LOCATION https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7)
 file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_date_time.so.1.58.0)

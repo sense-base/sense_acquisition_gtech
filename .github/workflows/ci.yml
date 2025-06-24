@@ -23,7 +23,7 @@ jobs:
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
           package-name: sense_eeg
-          target-ros2-distro: humble
+          target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
           colcon-defaults: |
             {
               "build": {

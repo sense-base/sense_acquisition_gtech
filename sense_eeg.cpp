@@ -20,7 +20,7 @@ std::string master;
 FILE* data_file_master = 0;
 //FILE* data_file_slave_0 = 0;
 
-class GtecEEGPublisher: public rclcpp::None {
+class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher()
     : Node("gtec_eeg_publisher"),
@@ -50,7 +50,7 @@ public:
         config_master.slave_mode = GT_FALSE;
         config_master.enable_sc = GT_FALSE;
         config_master.mode = GT_MODE_NORMAL;
-        config_master.num_analog_in = _num_channels;
+        config_master.num_analog_in = num_channels_;
 
         gt_usbamp_asynchron_config asynchron_config_master;
         for ( unsigned int i = 0; i < GT_USBAMP_NUM_GROUND; i++ )
@@ -84,7 +84,7 @@ public:
         {
             std::cout << "Could not open device " << master << std::endl;
             fclose( data_file_master );
-            return -1;
+            return;
         }
         if ( GT_SetConfiguration( master.c_str(), &config_master ) )
         {
@@ -119,6 +119,7 @@ private:
     int num_channels_;
     int num_samples_;
     float sampling_rate_;
+    std::string serial_num_;
 };
 
 //------------------------------------------------------------------------------

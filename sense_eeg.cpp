@@ -6,6 +6,8 @@
 #include <cstdio>
 #include <unistd.h>
 
+#include "rclcpp/rclcpp.hpp"
+#include "eeg_msgs/msg/eeg_block.hpp"
 #include <gAPI.h>
 //------------------------------------------------------------------------------
 #define MASTER "UR-2017.06.12"
@@ -114,7 +116,6 @@ private:
 
     rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
     rclcpp::TimerBase::SharedPtr timer_;
-    std::mt19937 rng_;
     int num_channels_;
     int num_samples_;
     float sampling_rate_;

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(sense_eeg VERSION 0.1)
+project(sense_gtec_eeg VERSION 0.1)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -8,7 +8,6 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(sense_eeg sense_eeg.cpp)
 # Download some of our dependencies
 
 set(GTEC_API_LOCATION https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main)
@@ -100,20 +99,20 @@ find_package(rclcpp REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-ament_target_dependencies(sense_eeg rclcpp)
+add_executable(gtec_eeg_publisher sense_eeg.cpp)
+ament_target_dependencies(gtec_eeg_publisher rclcpp)
+
 
 # Link to the gtec API
 link_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI)
-target_link_libraries(sense_eeg ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
+target_link_libraries(gtec_eeg_publisher ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
 
-target_include_directories(sense_eeg PUBLIC
+target_include_directories(gtec_eeg_publisher PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(sense_eeg PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(gtec_eeg_publisher PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-install(TARGETS sense_eeg
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -126,5 +125,12 @@ if(BUILD_TESTING)
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+install(TARGETS gtec_eeg_publisher
+  DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()

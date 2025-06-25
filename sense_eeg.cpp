@@ -25,6 +25,7 @@ void CallBackMaster( void* dummy )
     int* void2int = (int*)(dummy);
     (*void2int)++;
     size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
+    std::cout << "called back";
     if ( GT_GetData( master.c_str(), usr_buffer_master, cnt_master) )
       fwrite( usr_buffer_master, 1, cnt_master, data_file_master );
 }
@@ -103,14 +104,6 @@ int main()
   GT_StopAcquisition( master.c_str() );
   std::cout << "stopped"  << std::endl;
 
-/*
-  for (int i = 1; i <= 20; i++ )
-  { 
-	int impedance = 0;
-    	bool hasImpedance = GT_GetImpedance(master.c_str(), i, &impedance);
-	std::cout << "Impedance CH " << i << " (" << hasImpedance << "): " << impedance << std::endl;
-  }
-*/
   GT_CloseDevice( master.c_str() );
   fclose( data_file_master );
 }

@@ -20,6 +20,8 @@ std::string master;
 FILE* data_file_master = 0;
 //FILE* data_file_slave_0 = 0;
 
+unsigned char usr_buffer_master[ 32768 ];
+
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher()
@@ -123,7 +125,6 @@ private:
 };
 
 //------------------------------------------------------------------------------
-unsigned char usr_buffer_master[ 32768 ];
 void CallBackMaster( void* dummy )
 {
     int* void2int = (int*)(dummy);

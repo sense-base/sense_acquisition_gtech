@@ -125,7 +125,6 @@ if(BUILD_TESTING)
   # a copyright and license is added to all source files
   set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
-  ament_cmake_cpplint(EXCLUDE gUSBampAPI/gAPI.h)
 endif()
 
 ament_package()

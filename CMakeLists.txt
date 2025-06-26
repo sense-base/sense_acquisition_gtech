@@ -14,7 +14,7 @@ set(GTEC_API_LOCATION https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBa
 
 file(DOWNLOAD
   ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/gAPI.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/gAPI.h
+  /usr/include/gAPI.h
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
@@ -30,7 +30,7 @@ endif()
 
 file(DOWNLOAD
   ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01
-  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01
+  /usr/lib/libgUSBampAPIso.so.1.16.01
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
@@ -44,11 +44,11 @@ else()
   message(FATAL_ERROR "Error occurred during download of libgUSBampAPIso.so.1.16.01: ${ERROR_MESSAGE}")
 endif()
 
-file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01
-  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16 SYMBOLIC)
+file(CREATE_LINK /usr/lib/libgUSBampAPIso.so.1.16.01
+  /usr/lib/libgUSBampAPIso.so.1.16 SYMBOLIC)
 
-file(CREATE_LINK ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01
-  ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so SYMBOLIC)
+file(CREATE_LINK /usr/lib/libgUSBampAPIso.so.1.16.01
+  /usr/lib/libgUSBampAPIso.so SYMBOLIC)
 
 # install the filter data files.
 file(MAKE_DIRECTORY /etc/gtec/filter_files)
@@ -86,11 +86,11 @@ endif()
 
 # put the boost dependencies for libgusbampapiso64 in the same directory
 set(BOOST_LOCATION https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_date_time.so.1.58.0)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_regex.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_regex.so.1.58.0)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_signals.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_signals.so.1.58.0)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_system.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_system.so.1.58.0)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_thread.so.1.58.0 ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libboost_thread.so.1.58.0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 /usr/lib/libboost_date_time.so.1.58.0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_regex.so.1.58.0 /usr/lib/libboost_regex.so.1.58.0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_signals.so.1.58.0 /usr/lib/libboost_signals.so.1.58.0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_system.so.1.58.0 /usr/lib/libboost_system.so.1.58.0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_thread.so.1.58.0 /usr/lib/libboost_thread.so.1.58.0)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
@@ -107,12 +107,10 @@ ament_target_dependencies(gtec_eeg_publisher rclcpp std_msgs eeg_msgs)
 
 
 # Link to the gtec API
-link_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI)
-target_link_libraries(gtec_eeg_publisher ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
+# target_link_libraries(gtec_eeg_publisher ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
 
 target_include_directories(gtec_eeg_publisher PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI>
   $<INSTALL_INTERFACE:include>)
 target_compile_features(gtec_eeg_publisher PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 

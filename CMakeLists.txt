@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(sense_gtec_eeg VERSION 0.1)
+project(gtec_eeg_publisher VERSION 0.1)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)

@@ -110,7 +110,7 @@ public:
 
         int dummy_arg = 0;
         // GT_SetDataReadyCallBack( master.c_str(), &GtecEEGPublisher::publish_data, (void*)(&dummy_arg)) ;
-        GT_SetDataReadyCallBack( master.c_str(), &CallBackMaster, (void*)(&dummy_arg)) ;
+        GT_SetDataReadyCallBack( master.c_str(), GtecEEGPublisher::publish_data_wrapper, (void*)(&dummy_arg)) ;
         std::cout << "Start DAQ ... ";
         GT_StartAcquisition( master.c_str() );
         std::cout << "started" << std::endl;
@@ -126,16 +126,28 @@ public:
         fclose( data_file_master );
     }
 
+    static void publish_data_wrapper(void* context) {
+        static_cast<GtecEEGPublisher*>(context)->publish_data();
+    }
 
 private:
-    void publish_data(void* dummy)
+    void publish_data()
     {
-        int* void2int = (int*)(dummy);
-        (*void2int)++;
+	auto msg = eeg_msgs::msg::EEGBlock();
+        msg.header.stamp = this->now();
+        msg.num_channels = num_channels_;
+        msg.num_samples = num_samples_;
+        msg.sampling_rate = sampling_rate_;
+	msg.data.reserve(num_channels_ * num_samples_);
+
+        //int* void2int = (int*)(dummy);
+        //(*void2int)++;
         size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
         std::cout << "called back";
-        if ( GT_GetData( master.c_str(), usr_buffer_master, cnt_master) )
-            fwrite( usr_buffer_master, 1, cnt_master, data_file_master );
+	GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
+	publisher_->publish(msg);
+        // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+	std::cout << "Published EEGBlock with %ld samples" << msg.data.size();
     }
 
     rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;

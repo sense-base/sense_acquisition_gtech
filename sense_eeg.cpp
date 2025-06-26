@@ -133,21 +133,27 @@ public:
 private:
     void publish_data()
     {
-	auto msg = eeg_msgs::msg::EEGBlock();
-        msg.header.stamp = this->now();
+        auto msg = eeg_msgs::msg::EEGBlock();
+        //msg.header.stamp = this->now();
+        msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();  // calling this->now does not work (runtime error)
         msg.num_channels = num_channels_;
         msg.num_samples = num_samples_;
         msg.sampling_rate = sampling_rate_;
-	msg.data.reserve(num_channels_ * num_samples_);
+        //msg.data.reserve(num_channels_ * num_samples_); // this also breaks (at run time) 
+        
+        msg.data.reserve(512);
 
+        for (int i = 0; i < 512; ++i) { //placeholder until I work out how to put actual data in
+            msg.data.push_back(0.0);
+        }
         //int* void2int = (int*)(dummy);
         //(*void2int)++;
         size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
         std::cout << "called back";
-	GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
-	publisher_->publish(msg);
+        GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
+        //publisher_->publish(msg);
         // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
-	std::cout << "Published EEGBlock with %ld samples" << msg.data.size();
+        std::cout << "Published EEGBlock with " << msg.data.size() << " samples";
     }
 
     rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;

@@ -22,6 +22,17 @@ FILE* data_file_master = 0;
 
 unsigned char usr_buffer_master[ 32768 ];
 
+//------------------------------------------------------------------------------
+void CallBackMaster( void* dummy )
+{
+    int* void2int = (int*)(dummy);
+    (*void2int)++;
+    size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
+    std::cout << "called back";
+    if ( GT_GetData( master.c_str(), usr_buffer_master, cnt_master) )
+      fwrite( usr_buffer_master, 1, cnt_master, data_file_master );
+}
+
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher()
@@ -98,7 +109,8 @@ public:
         publisher_ = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", 10);
 
         int dummy_arg = 0;
-        GT_SetDataReadyCallBack( master.c_str(), this->publish_data, (void*)(&dummy_arg) );
+        // GT_SetDataReadyCallBack( master.c_str(), &GtecEEGPublisher::publish_data, (void*)(&dummy_arg)) ;
+        GT_SetDataReadyCallBack( master.c_str(), &CallBackMaster, (void*)(&dummy_arg)) ;
         std::cout << "Start DAQ ... ";
         GT_StartAcquisition( master.c_str() );
         std::cout << "started" << std::endl;
@@ -123,18 +135,6 @@ private:
     float sampling_rate_;
     std::string serial_num_;
 };
-
-//------------------------------------------------------------------------------
-void CallBackMaster( void* dummy )
-{
-    int* void2int = (int*)(dummy);
-    (*void2int)++;
-    size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
-    std::cout << "called back";
-    if ( GT_GetData( master.c_str(), usr_buffer_master, cnt_master) )
-      fwrite( usr_buffer_master, 1, cnt_master, data_file_master );
-}
-
 //------------------------------------------------------------------------------
 int main()
 {

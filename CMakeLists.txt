@@ -107,7 +107,7 @@ ament_target_dependencies(gtec_eeg_publisher rclcpp std_msgs eeg_msgs)
 
 
 # Link to the gtec API
-# target_link_libraries(gtec_eeg_publisher ${CMAKE_CURRENT_SOURCE_DIR}/gUSBampAPI/libgUSBampAPIso.so.1.16.01)
+target_link_libraries(gtec_eeg_publisher libgUSBampAPIso.so.1.16.01)
 
 target_include_directories(gtec_eeg_publisher PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

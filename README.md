@@ -31,9 +31,9 @@ Open the sense-base/base folder in VS Code and Reopen in Container when prompted
 
 ```bash
 export GTEC_TOKEN=XXXXXXXXXXXXX
-colcon build --packages-select eeg_msgs gtec_eeg_publisher_cpp
+colcon build --packages-select eeg_msgs gtec_eeg_publisher
 source install/setup.bash
-ros2 launch gtec_eeg_publisher_cpp gtec_publisher_launch.py
+ros2 launch gtec_eeg_publisher gtec_eeg_publisher_launch.py
 ```
 
 ## Requesting access to the g.tec API

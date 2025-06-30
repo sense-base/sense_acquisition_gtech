@@ -21,27 +21,16 @@ FILE* data_file_master = 0;
 //FILE* data_file_slave_0 = 0;
 
 unsigned char usr_buffer_master[ 32768 ];
-
-//------------------------------------------------------------------------------
-void CallBackMaster( void* dummy )
-{
-    int* void2int = (int*)(dummy);
-    (*void2int)++;
-    size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
-    std::cout << "called back";
-    if ( GT_GetData( master.c_str(), usr_buffer_master, cnt_master) )
-      fwrite( usr_buffer_master, 1, cnt_master, data_file_master );
-}
+rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
+int num_channels_ = 16;
+int num_samples_ = 32;
+float sampling_rate_ = 256;
+std::string serial_num_ = "UR-2017.06.12";
 
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher()
-    : Node("gtec_eeg_publisher"),
-      num_channels_ (16),
-      num_samples_(32),
-      sampling_rate_(256),
-      serial_num_("UR-2017.06.12")
-
+    : Node("gtec_eeg_publisher")
     {
         GT_ShowDebugInformation( GT_TRUE );
         master = serial_num_;
@@ -130,7 +119,6 @@ public:
         static_cast<GtecEEGPublisher*>(context)->publish_data();
     }
 
-private:
     void publish_data()
     {
         auto msg = eeg_msgs::msg::EEGBlock();
@@ -139,11 +127,10 @@ private:
         msg.num_channels = num_channels_;
         msg.num_samples = num_samples_;
         msg.sampling_rate = sampling_rate_;
-        //msg.data.reserve(num_channels_ * num_samples_); // this also breaks (at run time) 
+        msg.data.reserve(num_channels_ * num_samples_);
         
-        msg.data.reserve(512);
 
-        for (int i = 0; i < 512; ++i) { //placeholder until I work out how to put actual data in
+        for (int i = 0; i < num_channels_ * num_samples_; ++i) { //placeholder until I work out how to put actual data in
             msg.data.push_back(0.0);
         }
         //int* void2int = (int*)(dummy);
@@ -151,18 +138,12 @@ private:
         size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
         std::cout << "called back";
         GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
-        //publisher_->publish(msg);
+        publisher_->publish(msg);
         // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
         std::cout << "Published EEGBlock with " << msg.data.size() << " samples";
     }
 
-    rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
-    rclcpp::TimerBase::SharedPtr timer_;
-    int num_channels_;
-    int num_samples_;
-    float sampling_rate_;
-    std::string serial_num_;
-};
+   };
 //------------------------------------------------------------------------------
 int main(int argc, char * argv[]) {
     rclcpp::init(argc, argv);

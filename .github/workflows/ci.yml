@@ -11,14 +11,14 @@ on:
       - '**'
 jobs:
   build_and_test_ros2:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Use the noble Ubuntu LTS version
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
 
     steps:
 
       - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@0.7
+        uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions

@@ -20,6 +20,10 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
 
+      - name: Clone the ROS2' packages dependencies 
+        run: |
+          git clone https://github.com/sense-base/sense_msgs.git
+
       - name: ⚙️ Install libraries
         run: |
           sudo apt-get update
@@ -33,7 +37,7 @@ jobs:
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
-          package-name: sense_eeg
+          package-name: sense_msgs
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
           colcon-defaults: |
             {

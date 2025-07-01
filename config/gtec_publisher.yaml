@@ -3,3 +3,5 @@ gtec_eeg_publisher:
     num_channels: 8
     num_samples: 32
     sampling_rate: 256.0
+    serial_num_: "UR-2017.06.12"
+    

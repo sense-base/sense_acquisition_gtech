@@ -30,13 +30,18 @@ public:
     : Node("gtec_eeg_publisher"),
         num_channels_(declare_parameter<int>("num_channels", 1)),
         num_samples_(declare_parameter<int>("num_samples", 1)),
-        sampling_rate_(declare_parameter<double>("sampling_rate", 256.0))
+        sampling_rate_(declare_parameter<double>("sampling_rate", 256.0)),
+        serial_num_(declare_parameter<std::string>("serial_num", "UR-2017.06.12"))
+        
+        number_of_scans_(declare_parameter<int>("number_of_scans", GT_NOS_AUTOSET))
+
     {
         //print out for testing
         std::cout << "Loaded parameters:" << std::endl;
         std::cout << "num_channels: " << num_channels_ << std::endl;
         std::cout << "num_samples: " << num_samples_ << std::endl;
         std::cout << "sampling_rate: " << sampling_rate_ << std::endl;
+        std::cout << "serial_num: " << serial_num_ << std::endl;
         
         GT_ShowDebugInformation( GT_TRUE );
         master = serial_num_;
@@ -52,7 +57,7 @@ public:
         gt_usbamp_config config_master;
         config_master.ao_config = &ao_config_master;
         config_master.sample_rate = sample_rate;
-        config_master.number_of_scans = GT_NOS_AUTOSET;
+        config_master.number_of_scans = number_of_scans_;
         config_master.enable_trigger_line = GT_FALSE;
         config_master.scan_dio = GT_FALSE;
         config_master.slave_mode = GT_FALSE;
@@ -153,6 +158,7 @@ public:
     int num_channels_;
     int num_samples_;
     double sampling_rate_;
+    std::string serial_num_;
 
    };
 //------------------------------------------------------------------------------

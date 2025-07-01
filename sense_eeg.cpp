@@ -16,13 +16,12 @@
 
 //------------------------------------------------------------------------------
 std::string master;
-//std::string slave_0;
-FILE* data_file_master = 0;
-//FILE* data_file_slave_0 = 0;
+
+unsigned char usr_buffer_master[ 32768 ];
 
 rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
-int num_channels_ = 16;
-int num_samples_ = 32;
+int num_channels_ = 1;
+int num_samples_ = 2;
 float sampling_rate_ = 256;
 std::string serial_num_ = "UR-2017.06.12";
 
@@ -33,7 +32,6 @@ public:
     {
         GT_ShowDebugInformation( GT_TRUE );
         master = serial_num_;
-        data_file_master = fopen( "data_master.bin", "wb" );
 
         const int sample_rate = sampling_rate_;
         gt_usbamp_analog_out_config ao_config_master;
@@ -45,6 +43,10 @@ public:
         gt_usbamp_config config_master;
         config_master.ao_config = &ao_config_master;
         config_master.sample_rate = sample_rate;
+        // number_of_scans sets how many scans are included in each message.
+        // setting to GT_NOS_AUTOSET trys to automatically set a value that
+        // balances packet size against CPU load. Lots of small messages creates
+       // high CPU load.
         config_master.number_of_scans = GT_NOS_AUTOSET;
         config_master.enable_trigger_line = GT_FALSE;
         config_master.scan_dio = GT_FALSE;
@@ -53,10 +55,8 @@ public:
         config_master.mode = GT_MODE_NORMAL;
         config_master.num_analog_in = num_channels_;
 
-        gt_usbamp_asynchron_config asynchron_config_master;
         for ( unsigned int i = 0; i < GT_USBAMP_NUM_GROUND; i++ )
         {
-            asynchron_config_master.digital_out[i] = GT_FALSE;
             config_master.common_ground[i] = GT_TRUE;
             config_master.common_reference[i] = GT_TRUE;
         }
@@ -84,7 +84,6 @@ public:
         else
         {
             std::cout << "Could not open device " << master << std::endl;
-            fclose( data_file_master );
             return;
         }
         if ( GT_SetConfiguration( master.c_str(), &config_master ) )
@@ -111,7 +110,6 @@ public:
         std::cout << "stopped"  << std::endl;
 
         GT_CloseDevice( master.c_str() );
-        fclose( data_file_master );
     }
 
     static void publish_data_wrapper(void* context) {
@@ -126,19 +124,20 @@ public:
         msg.num_channels = num_channels_;
         msg.num_samples = num_samples_;
         msg.sampling_rate = sampling_rate_;
-        
-        //int* void2int = (int*)(dummy);
-        //(*void2int)++;
-        size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
-        //msg.data.reserve(num_channels_ * num_samples_ * cnt_master);
-        msg.data.reserve(cnt_master);
-        std::cout << "called back with " << cnt_master << " samples";
 
-        GT_GetData( master.c_str(), msg.data.data(), cnt_master);
-	std::cout << msg.data[0];
+        size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
+        msg.data.reserve(cnt_master);
+        //msg.data.reserve(cnt_master);
+
+        GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
+        float* float_buffer = reinterpret_cast<float *>(usr_buffer_master);
+
+        for (size_t i = 0; i < cnt_master / 4; ++i) {
+            msg.data.push_back(float_buffer[i]);
+        }
+        //msg.data.data = usr_buffer_master
         publisher_->publish(msg);
         // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
-        std::cout << "Published EEGBlock with " << msg.data.size() << " samples";
     }
 
    };

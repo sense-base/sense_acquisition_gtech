@@ -22,16 +22,22 @@ FILE* data_file_master = 0;
 
 unsigned char usr_buffer_master[ 32768 ];
 rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
-int num_channels_ = 16;
-int num_samples_ = 32;
-float sampling_rate_ = 256;
 std::string serial_num_ = "UR-2017.06.12";
 
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher()
-    : Node("gtec_eeg_publisher")
+    : Node("gtec_eeg_publisher"),
+        num_channels_(declare_parameter<int>("num_channels", 1)),
+        num_samples_(declare_parameter<int>("num_samples", 1)),
+        sampling_rate_(declare_parameter<double>("sampling_rate", 256.0))
     {
+        //print out for testing
+        std::cout << "Loaded parameters:" << std::endl;
+        std::cout << "num_channels: " << num_channels_ << std::endl;
+        std::cout << "num_samples: " << num_samples_ << std::endl;
+        std::cout << "sampling_rate: " << sampling_rate_ << std::endl;
+        
         GT_ShowDebugInformation( GT_TRUE );
         master = serial_num_;
         data_file_master = fopen( "data_master.bin", "wb" );
@@ -142,6 +148,11 @@ public:
         // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
         std::cout << "Published EEGBlock with " << msg.data.size() << " samples";
     }
+
+    private:
+    int num_channels_;
+    int num_samples_;
+    double sampling_rate_;
 
    };
 //------------------------------------------------------------------------------

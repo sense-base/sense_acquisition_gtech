@@ -20,7 +20,6 @@ std::string master;
 FILE* data_file_master = 0;
 //FILE* data_file_slave_0 = 0;
 
-unsigned char usr_buffer_master[ 32768 ];
 rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
 int num_channels_ = 16;
 int num_samples_ = 32;
@@ -127,17 +126,16 @@ public:
         msg.num_channels = num_channels_;
         msg.num_samples = num_samples_;
         msg.sampling_rate = sampling_rate_;
-        msg.data.reserve(num_channels_ * num_samples_);
         
-
-        for (int i = 0; i < num_channels_ * num_samples_; ++i) { //placeholder until I work out how to put actual data in
-            msg.data.push_back(0.0);
-        }
         //int* void2int = (int*)(dummy);
         //(*void2int)++;
         size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
-        std::cout << "called back";
-        GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
+        //msg.data.reserve(num_channels_ * num_samples_ * cnt_master);
+        msg.data.reserve(cnt_master);
+        std::cout << "called back with " << cnt_master << " samples";
+
+        GT_GetData( master.c_str(), msg.data.data(), cnt_master);
+	std::cout << msg.data[0];
         publisher_->publish(msg);
         // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
         std::cout << "Published EEGBlock with " << msg.data.size() << " samples";

@@ -15,68 +15,51 @@
 #define TIME 5
 
 //------------------------------------------------------------------------------
-std::string master;
 
 unsigned char usr_buffer_master[ 32768 ];
 
-rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher_;
 
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher();
     ~GtecEEGPublisher();
-    rclcpp::Time get_now();
     int num_channels;
     int num_samples;
     float sampling_rate;
     std::string serial_num;
-};
-
-class GtecEEGConfig {
-public:
-    int num_channels;
-    int num_samples;
-    float sampling_rate;
-    std::string serial_num;
-    rclcpp::Time now; // not in use
+    rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher;
 };
 
 void publish_data(void* context)
 {
     auto msg = eeg_msgs::msg::EEGBlock();
     GtecEEGPublisher* config = static_cast<GtecEEGPublisher*>(context);
-    //msg.header.stamp = this->now();
-    msg.header.stamp = rclcpp::Clock(RCL_ROS_TIME).now();  // calling this->now does not work (runtime error)
+    msg.header.stamp = config->now();
     msg.num_channels = config->num_channels;
     msg.num_samples = config->num_samples;
     msg.sampling_rate = config->sampling_rate;
 
-    size_t cnt_master = GT_GetSamplesAvailable( master.c_str() );
+    size_t cnt_master = GT_GetSamplesAvailable( config->serial_num.c_str() );
     msg.data.reserve(cnt_master);
-    //msg.data.reserve(cnt_master);
 
-    GT_GetData( master.c_str(), usr_buffer_master, cnt_master);
+    GT_GetData( config->serial_num.c_str(), usr_buffer_master, cnt_master);
     float* float_buffer = reinterpret_cast<float *>(usr_buffer_master);
 
     for (size_t i = 0; i < cnt_master / 4; ++i) {
         msg.data.push_back(float_buffer[i]);
     }
-    //msg.data.data = usr_buffer_master
-    publisher_->publish(msg);
-    // RCLCPP_INFO(this->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+    config->publisher->publish(msg);
+    RCLCPP_INFO(config->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
 }
 
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
 {
-    static GtecEEGConfig pub_config = GtecEEGConfig();
-
     num_channels = 1;
     num_samples = 2;
     sampling_rate = 256;
     serial_num = "UR-2017.06.12";
 
     GT_ShowDebugInformation( GT_TRUE );
-    master = serial_num;
 
     const int sample_rate = sampling_rate;
     gt_usbamp_analog_out_config ao_config_master;
@@ -122,40 +105,38 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
 
     GT_FreeDeviceList( device_list, list_size );
 
-    if ( GT_OpenDevice( master.c_str() ) )
+    if ( GT_OpenDevice( serial_num.c_str() ) )
     {
-        std::cout << "Master : " << master << " open" << std::endl;
+        std::cout << "Master : " << serial_num << " open" << std::endl;
     }
     else
     {
-        std::cout << "Could not open device " << master << std::endl;
+        std::cout << "Could not open device " << serial_num << std::endl;
         return;
     }
-    if ( GT_SetConfiguration( master.c_str(), &config_master ) )
+    if ( GT_SetConfiguration( serial_num.c_str(), &config_master ) )
     {
         std::cout << "Master:  Applied config master." << std::endl;
     }
 
     // Second argument (10) below is
     // qos_history_depth The depth of the publisher message queue
-    publisher_ = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", 10);
+    publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", 10);
 
     std::cout << "Config: " << num_channels << " : " << num_samples;
-    int dummy_arg = 7;
-    // GT_SetDataReadyCallBack( master.c_str(), &GtecEEGPublisher::publish_data, (void*)(&dummy_arg)) ;
-    GT_SetDataReadyCallBack( master.c_str(), &publish_data, (void*)(this)) ;
+    GT_SetDataReadyCallBack( serial_num.c_str(), &publish_data, (void*)(this)) ;
     std::cout << "Start DAQ ... ";
-    GT_StartAcquisition( master.c_str() );
+    GT_StartAcquisition( serial_num.c_str() );
     std::cout << "started" << std::endl;
 
 }
 GtecEEGPublisher::~GtecEEGPublisher()
 {
     std::cout << "Stop DAQ ... ";
-    GT_StopAcquisition( master.c_str() );
+    GT_StopAcquisition( serial_num.c_str() );
     std::cout << "stopped"  << std::endl;
 
-    GT_CloseDevice( master.c_str() );
+    GT_CloseDevice( serial_num.c_str() );
 }
 
 //------------------------------------------------------------------------------

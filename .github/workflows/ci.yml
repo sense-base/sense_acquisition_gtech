@@ -42,7 +42,7 @@ jobs:
             {
               "build": {
               "mixin": ["coverage-gcc"]
-              }
+              },
               "packages-up-to": [
                 "eeg_msgs"
               ]

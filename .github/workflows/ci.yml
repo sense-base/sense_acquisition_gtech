@@ -35,14 +35,14 @@ jobs:
           git clone https://github.com/sense-base/sense_msgs.git
 
       - name: Generate deps.repos
-        run: |
+      - uses: actions/checkout@v4
+      - run: |
           rosinstall_generator eeg_msgs \
             --rosdistro jazzy \
             --deps-only \
             --deps \
             --upstream-development > /tmp/deps.repos
 
-      - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.

@@ -2,13 +2,8 @@
 //Copyright 2026 University College London. Partly derived from main.cpp expample file
 //courtesy g.tec Copyright (C) 2014-2016 g.tec medical engineering GmbH.
 
-#include <iostream>
-#include <cstdio>
-#include <unistd.h>
-
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
-#include <gAPI.h>
 
 unsigned char usr_buffer_master[ 32768 ];
 

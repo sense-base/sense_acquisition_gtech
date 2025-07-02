@@ -41,9 +41,7 @@ jobs:
           colcon-defaults: |
             {
               "build": {
-              "mixin": ["coverage-gcc"]
-              },
-              "packages-up-to": [
-                "eeg_msgs"
-              ]
+                "mixin": ["coverage-gcc"],
+                "packages-up-to": ["eeg_msgs"]
+              }
             }

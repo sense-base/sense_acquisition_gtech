@@ -49,7 +49,7 @@ void publish_data(void* context)
         msg.data.push_back(float_buffer[i]);
     }
     config->publisher->publish(msg);
-    RCLCPP_INFO(config->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+    RCLCPP_DEBUG(config->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
 }
 
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
@@ -107,7 +107,8 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
 
     if ( GT_OpenDevice( serial_num.c_str() ) )
     {
-        std::cout << "Master : " << serial_num << " open" << std::endl;
+      std::string log_message = "Opened g.tec device : " + serial_num;
+      RCLCPP_INFO(this->get_logger(), log_message.c_str());
     }
     else
     {

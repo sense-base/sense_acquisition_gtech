@@ -96,7 +96,7 @@ file(DOWNLOAD ${BOOST_LOCATION}/libboost_thread.so.1.58.0 /usr/lib/libboost_thre
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
-# find_package(eeg_msgs REQUIRED)
+find_package(eeg_msgs REQUIRED)
 
 # uncomment the following section in order to fill in
 # further dependencies manually.

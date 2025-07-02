@@ -2,4 +2,4 @@ repositories:
   ament/sense_msgs:
     type: git
     url: https://github.com/sense-base/sense_msgs.git
-    version: jazzy
+    version: 0.0.1

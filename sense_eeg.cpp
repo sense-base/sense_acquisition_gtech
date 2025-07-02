@@ -9,15 +9,8 @@
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
 #include <gAPI.h>
-//------------------------------------------------------------------------------
-#define MASTER "UR-2017.06.12"
-#define SAMPLERATE 512
-#define TIME 5
-
-//------------------------------------------------------------------------------
 
 unsigned char usr_buffer_master[ 32768 ];
-
 
 class GtecEEGPublisher : public rclcpp::Node {
 public:
@@ -107,35 +100,36 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
 
     if ( GT_OpenDevice( serial_num.c_str() ) )
     {
-      std::string log_message = "Opened g.tec device : " + serial_num;
-      RCLCPP_INFO(this->get_logger(), log_message.c_str());
+        std::string log_message = "Opened g.tec device : " + serial_num;
+        RCLCPP_INFO(this->get_logger(), log_message.c_str());
     }
     else
     {
-        std::cout << "Could not open device " << serial_num << std::endl;
+        std::string log_message = "Could not open device " + serial_num;
+        RCLCPP_ERROR(this->get_logger(), log_message.c_str());
         return;
     }
     if ( GT_SetConfiguration( serial_num.c_str(), &config_master ) )
     {
-        std::cout << "Master:  Applied config master." << std::endl;
+        RCLCPP_INFO(this->get_logger(), "Master:  Applied config master.");
     }
 
     // Second argument (10) below is
     // qos_history_depth The depth of the publisher message queue
     publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", 10);
 
-    std::cout << "Config: " << num_channels << " : " << num_samples;
+    RCLCPP_INFO(this->get_logger(), "Config: %d channels and %d samples", num_channels, num_samples);
     GT_SetDataReadyCallBack( serial_num.c_str(), &publish_data, (void*)(this)) ;
-    std::cout << "Start DAQ ... ";
+    RCLCPP_INFO(this->get_logger(), "Starting DAQ ... ");
     GT_StartAcquisition( serial_num.c_str() );
-    std::cout << "started" << std::endl;
+    RCLCPP_INFO(this->get_logger(), "DAQ started ");
 
 }
 GtecEEGPublisher::~GtecEEGPublisher()
 {
-    std::cout << "Stop DAQ ... ";
+    RCLCPP_INFO(this->get_logger(), "Stopping DAQ ... ");
     GT_StopAcquisition( serial_num.c_str() );
-    std::cout << "stopped"  << std::endl;
+    RCLCPP_INFO(this->get_logger(), "DAQ stopped ");
 
     GT_CloseDevice( serial_num.c_str() );
 }

@@ -35,8 +35,8 @@ jobs:
           git clone https://github.com/sense-base/sense_msgs.git
 
       - name: Generate deps.repos
-      - uses: actions/checkout@v4
-      - run: |
+        uses: actions/checkout@v4
+        run: |
           rosinstall_generator eeg_msgs \
             --rosdistro jazzy \
             --deps-only \

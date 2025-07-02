@@ -18,21 +18,9 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
 
-      - name: Clone and build eeg_msgs
+      - name: Clone eeg_msgs package 
         run: |
           git clone https://github.com/sense-base/sense_msgs.git
-          cd sense_msgs
-        uses: ros-tooling/action-ros-ci@0.4.3
-        with:
-          package-name: eeg_msgs
-          target-ros2-distro: jazzy
-          skip-tests: true
-          colcon-defaults: |
-            {
-              "build": {
-              "mixin": ["coverage-gcc"]
-              }
-            }
 
       - name: ⚙️ Install libraries
         run: |
@@ -47,7 +35,7 @@ jobs:
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
-          package-name: gtec_eeg_publisher
+          package-name: eeg_msgs gtec_eeg_publisher
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
           skip-tests: true
           colcon-defaults: |
@@ -55,4 +43,7 @@ jobs:
               "build": {
               "mixin": ["coverage-gcc"]
               }
+              "packages-up-to": [
+                "eeg_msgs"
+              ]
             }

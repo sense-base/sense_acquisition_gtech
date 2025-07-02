@@ -36,6 +36,21 @@ jobs:
           owner: 'sense-base'
           repository: 'PRIVATE_gUSBamp-Linux-Driver-C-API'
           access-token: ${{ secrets.GTEC_TOKEN }}
+      
+      - name: ⚙️ Install GTEC libraries
+        run: |
+            echo "Installing GTEC libraries..."
+            echo $PWD
+            rm -f /usr/lib/*usbamp*
+            rm -f /usr/lib/*USBamp*
+            mkdir -p /etc/gtec/filter_files/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/gAPI.h /usr/include/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01 /usr/lib/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/*.bin /etc/gtec/filter_files/
+            cd /usr/lib
+            ln -s libgUSBampAPIso.so.1.16.01 libgUSBampAPIso.so.1.16 
+            ldconfig /usr/lib
+            echo ... done
         
       - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3

@@ -27,7 +27,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install libusb-dev # libusb-dev is needed for libusb-1.0.so.0
-          sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70
+          # sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70
           sudo apt-get -y install libicu70 # libicu70 # libicu70 is needed for libicui18n.so.70 and libicuuc.so.70
 
       - name: Build gtec_eeg_publisher ROS 2

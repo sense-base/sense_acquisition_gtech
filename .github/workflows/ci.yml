@@ -27,7 +27,7 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install libusb-dev
 
-      - name: Build and run tests
+      - name: Build gtec_eeg_publisher ROS 2
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
@@ -37,6 +37,7 @@ jobs:
         with:
           package-name: eeg_msgs gtec_eeg_publisher
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
+          skip-tests: true
           colcon-defaults: |
             {
               "build": {

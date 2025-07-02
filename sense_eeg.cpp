@@ -11,26 +11,26 @@
 #include <gAPI.h>
 #include <sense_eeg.h>
 
-void publish_data(void* context)
+void publish_data(void* eeg_publisher)
 {
     auto msg = eeg_msgs::msg::EEGBlock();
-    GtecEEGPublisher* config = static_cast<GtecEEGPublisher*>(context);
-    msg.header.stamp = config->now();
-    msg.num_channels = config->num_channels;
-    msg.num_samples = config->num_samples;
-    msg.sampling_rate = config->sampling_rate;
+    GtecEEGPublisher* publisher = static_cast<GtecEEGPublisher*>(eeg_publisher);
+    msg.header.stamp = publisher->now();
+    msg.num_channels = publisher->num_channels;
+    msg.num_samples = publisher->num_samples;
+    msg.sampling_rate = publisher->sampling_rate;
 
-    size_t cnt_master = GT_GetSamplesAvailable( config->serial_num.c_str() );
+    size_t cnt_master = GT_GetSamplesAvailable( publisher->serial_num.c_str() );
     msg.data.reserve(cnt_master);
 
-    GT_GetData( config->serial_num.c_str(), usr_buffer_master, cnt_master);
+    GT_GetData( publisher->serial_num.c_str(), usr_buffer_master, cnt_master);
     float* float_buffer = reinterpret_cast<float *>(usr_buffer_master);
 
     for (size_t i = 0; i < cnt_master / 4; ++i) {
         msg.data.push_back(float_buffer[i]);
     }
-    config->publisher->publish(msg);
-    RCLCPP_DEBUG(config->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+    publisher->publisher->publish(msg);
+    RCLCPP_DEBUG(publisher->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
 }
 
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
@@ -105,7 +105,7 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
     // Set the depth of the publisher message queue. I think a higher number here
     // will make it less likely that messages will be dropped, at the expense
     // of system resources
-    int qos_history_depth = 10
+    int qos_history_depth = 10;
     publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", qos_history_depth);
 
     RCLCPP_INFO(this->get_logger(), "Config: %d channels and %d samples", num_channels, num_samples);

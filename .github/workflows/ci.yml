@@ -17,23 +17,24 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
 
-      - name: Clone eeg_msgs package 
-        run: |
-          git clone https://github.com/sense-base/sense_msgs.git
-          cd sense_msgs
-
       - name: ⚙️ Install libraries
         run: |
           sudo apt-get update
           sudo apt-get -y install libusb-dev # libusb-dev is needed for libusb-1.0.so.0
-          # sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70 # E: Unable to locate package (Solution: https://stackoverflow.com/questions/65250623)
+            # sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70 
+            # E: Unable to locate package (Solution: https://stackoverflow.com/questions/65250623)
           wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb
           sudo dpkg -i libicu66_66.1-2ubuntu2_amd64.deb
-          # sudo apt-get -y install libicu70 # libicu70 # libicu70 is needed for libicui18n.so.70 and libicuuc.so.70 # E: Unable to locate package (Solution: https://answers.launchpad.net/ubuntu/+source/icu/+question/818827)
+            # sudo apt-get -y install libicu70 # libicu70 is needed for libicui18n.so.70 and libicuuc.so.70 
+            # E: Unable to locate package (Solution: https://answers.launchpad.net/ubuntu/+source/icu/+question/818827)
           wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
           sudo dpkg -i libicu70_70.1-2_amd64.deb
 
-      - name: Build gtec_eeg_publisher ROS 2
+      - name: Clone eeg_msgs package 
+        run: |
+          git clone https://github.com/sense-base/sense_msgs.git
+
+      - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
@@ -41,7 +42,7 @@ jobs:
         env: 
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
-          package-name: eeg_msgs gtec_eeg_publisher
+          package-name: eeg_msgs
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
           skip-tests: true
           colcon-defaults: |

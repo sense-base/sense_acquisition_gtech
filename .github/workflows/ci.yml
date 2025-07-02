@@ -18,6 +18,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ⚙️ Install libraries
+        env: 
+          GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         run: |
           sudo apt-get update
           sudo apt-get -y install libusb-dev # libusb-dev is needed for libusb-1.0.so.0
@@ -29,14 +31,13 @@ jobs:
             # E: Unable to locate package (Solution: https://answers.launchpad.net/ubuntu/+source/icu/+question/818827)
           wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
           sudo dpkg -i libicu70_70.1-2_amd64.deb
+          wget https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01
 
       - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
-        env: 
-          GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
           package-name: gtec_eeg_publisher
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 

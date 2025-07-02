@@ -33,21 +33,47 @@ void publish_data(void* eeg_publisher)
     RCLCPP_DEBUG(publisher->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
 }
 
-GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
-{
-    num_channels = 1;
-    num_samples = 2;
-    sampling_rate = 256;
-    serial_num = "UR-2017.06.12";
+GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher"),
 
+    num_channels(declare_parameter<int>("num_channels", 1)),
+    num_samples(declare_parameter<int>("num_samples", 1)),
+    sampling_rate(declare_parameter<double>("sampling_rate", 256.0)),
+    serial_num(declare_parameter<std::string>("serial_num", "UR-2017.06.12")),
+    
+    number_of_scans(declare_parameter<int>("number_of_scans", GT_NOS_AUTOSET)),
+    ao_frequency(declare_parameter<int>("ao_frequency", 10)),
+    ao_amplitude(declare_parameter<int>("ao_amplitude", 200)),
+    ao_offset(declare_parameter<int>("ao_offset", 0)),
+    enable_trigger_line(declare_parameter<bool>("enable_trigger_line", false)),
+    scan_dio(declare_parameter<bool>("scan_dio", false)),
+    slave_mode(declare_parameter<bool>("slave_mode", false)),
+    enable_sc(declare_parameter<bool>("enable_sc", false))
+
+{
+    //print out for testing
+    std::cout << "Loaded parameters:" << std::endl;
+    std::cout << "num_channels: " << num_channels << std::endl;
+    std::cout << "num_samples: " << num_samples << std::endl;
+    std::cout << "sampling_rate: " << sampling_rate << std::endl;
+    std::cout << "serial_num: " << serial_num << std::endl;
+
+    std::cout << "number_of_scans: " << number_of_scans << std::endl;
+    std::cout << "ao_frequency: " << ao_frequency << std::endl;
+    std::cout << "ao_amplitude: " << ao_amplitude << std::endl;
+    std::cout << "ao_offset: " << ao_offset << std::endl;
+    std::cout << "enable_trigger_line: " << enable_trigger_line << std::endl;
+    std::cout << "scan_dio: " << scan_dio << std::endl;
+    std::cout << "slave_mode: " << slave_mode << std::endl;
+    std::cout << "enable_sc: " << enable_sc << std::endl;
+    
     GT_ShowDebugInformation( GT_TRUE );
 
     const int sample_rate = sampling_rate;
     gt_usbamp_analog_out_config ao_config_master;
     ao_config_master.shape = GT_ANALOGOUT_SINE;
-    ao_config_master.frequency = 10;
-    ao_config_master.amplitude = 200;
-    ao_config_master.offset = 0;
+    ao_config_master.frequency = ao_frequency;
+    ao_config_master.amplitude = ao_amplitude;
+    ao_config_master.offset = ao_offset;
 
     gt_usbamp_config config_master;
     config_master.ao_config = &ao_config_master;
@@ -56,11 +82,11 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
     // setting to GT_NOS_AUTOSET trys to automatically set a value that
     // balances packet size against CPU load. Lots of small messages creates
     // high CPU load.
-    config_master.number_of_scans = GT_NOS_AUTOSET;
-    config_master.enable_trigger_line = GT_FALSE;
-    config_master.scan_dio = GT_FALSE;
-    config_master.slave_mode = GT_FALSE;
-    config_master.enable_sc = GT_FALSE;
+    config_master.number_of_scans = number_of_scans;
+    config_master.enable_trigger_line = enable_trigger_line ? GT_TRUE : GT_FALSE;
+    config_master.scan_dio = scan_dio ? GT_TRUE : GT_FALSE;
+    config_master.slave_mode = slave_mode ? GT_TRUE : GT_FALSE;
+    config_master.enable_sc = enable_sc ? GT_TRUE : GT_FALSE;
     config_master.mode = GT_MODE_NORMAL;
     config_master.num_analog_in = num_channels;
 

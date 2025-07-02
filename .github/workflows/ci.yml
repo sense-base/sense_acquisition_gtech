@@ -34,6 +34,14 @@ jobs:
         run: |
           git clone https://github.com/sense-base/sense_msgs.git
 
+      - name: Generate deps.repos
+        run: |
+          rosinstall_generator eeg_msgs \
+            --rosdistro=jazzy \
+            --deps-only \
+            --deps \
+            --upstream-development > /tmp/deps.repos
+
       - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
@@ -44,6 +52,7 @@ jobs:
         with:
           package-name: eeg_msgs
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
+          vcs-repo-file-url: /tmp/deps.repos
           skip-tests: true
           colcon-defaults: |
             {

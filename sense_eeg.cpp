@@ -31,9 +31,16 @@ public:
         num_channels_(declare_parameter<int>("num_channels", 1)),
         num_samples_(declare_parameter<int>("num_samples", 1)),
         sampling_rate_(declare_parameter<double>("sampling_rate", 256.0)),
-        serial_num_(declare_parameter<std::string>("serial_num", "UR-2017.06.12"))
+        serial_num_(declare_parameter<std::string>("serial_num", "UR-2017.06.12")),
         
-        number_of_scans_(declare_parameter<int>("number_of_scans", GT_NOS_AUTOSET))
+        number_of_scans_(declare_parameter<int>("number_of_scans", GT_NOS_AUTOSET)),
+        ao_frequency_(declare_parameter<int>("ao_frequency", 10)),
+        ao_amplitude_(declare_parameter<int>("ao_amplitude", 200)),
+        ao_offset_(declare_parameter<int>("ao_offset", 0)),
+        enable_trigger_line_(declare_parameter<bool>("enable_trigger_line", false)),
+        scan_dio_(declare_parameter<bool>("scan_dio", false)),
+        slave_mode_(declare_parameter<bool>("slave_mode", false)),
+        enable_sc_(declare_parameter<bool>("enable_sc", false))
 
     {
         //print out for testing
@@ -42,6 +49,15 @@ public:
         std::cout << "num_samples: " << num_samples_ << std::endl;
         std::cout << "sampling_rate: " << sampling_rate_ << std::endl;
         std::cout << "serial_num: " << serial_num_ << std::endl;
+
+        std::cout << "number_of_scans: " << number_of_scans_ << std::endl;
+        std::cout << "ao_frequency: " << ao_frequency_ << std::endl;
+        std::cout << "ao_amplitude: " << ao_amplitude_ << std::endl;
+        std::cout << "ao_offset: " << ao_offset_ << std::endl;
+        std::cout << "enable_trigger_line: " << enable_trigger_line_ << std::endl;
+        std::cout << "scan_dio: " << scan_dio_ << std::endl;
+        std::cout << "slave_mode: " << slave_mode_ << std::endl;
+        std::cout << "enable_sc: " << enable_sc_ << std::endl;
         
         GT_ShowDebugInformation( GT_TRUE );
         master = serial_num_;
@@ -50,18 +66,18 @@ public:
         const int sample_rate = sampling_rate_;
         gt_usbamp_analog_out_config ao_config_master;
         ao_config_master.shape = GT_ANALOGOUT_SINE;
-        ao_config_master.frequency = 10;
-        ao_config_master.amplitude = 200;
-        ao_config_master.offset = 0;
+        ao_config_master.frequency = ao_frequency_;
+        ao_config_master.amplitude = ao_amplitude_;
+        ao_config_master.offset = ao_offset_;
 
         gt_usbamp_config config_master;
         config_master.ao_config = &ao_config_master;
         config_master.sample_rate = sample_rate;
         config_master.number_of_scans = number_of_scans_;
-        config_master.enable_trigger_line = GT_FALSE;
-        config_master.scan_dio = GT_FALSE;
-        config_master.slave_mode = GT_FALSE;
-        config_master.enable_sc = GT_FALSE;
+        config_master.enable_trigger_line = enable_trigger_line_ ? GT_TRUE : GT_FALSE;
+        config_master.scan_dio = scan_dio_ ? GT_TRUE : GT_FALSE;
+        config_master.slave_mode = slave_mode_ ? GT_TRUE : GT_FALSE;
+        config_master.enable_sc = enable_sc_ ? GT_TRUE : GT_FALSE;
         config_master.mode = GT_MODE_NORMAL;
         config_master.num_analog_in = num_channels_;
 
@@ -159,6 +175,14 @@ public:
     int num_samples_;
     double sampling_rate_;
     std::string serial_num_;
+    int number_of_scans_;
+    int ao_frequency_;
+    int ao_amplitude_;
+    int ao_offset_;
+    bool enable_trigger_line_;
+    bool scan_dio_;
+    bool slave_mode_;
+    bool enable_sc_;
 
    };
 //------------------------------------------------------------------------------

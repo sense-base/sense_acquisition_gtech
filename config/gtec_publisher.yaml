@@ -4,4 +4,11 @@ gtec_eeg_publisher:
     num_samples: 32
     sampling_rate: 256.0
     serial_num_: "UR-2017.06.12"
-    
+    number_of_scans: -1
+    ao_frequency: 10
+    ao_amplitude: 200
+    ao_offset: 0
+    enable_trigger_line: false
+    scan_dio: false
+    slave_mode: false
+    enable_sc: false

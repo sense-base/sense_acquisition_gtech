@@ -102,9 +102,11 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
         RCLCPP_INFO(this->get_logger(), "Master:  Applied config master.");
     }
 
-    // Second argument (10) below is
-    // qos_history_depth The depth of the publisher message queue
-    publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", 10);
+    // Set the depth of the publisher message queue. I think a higher number here
+    // will make it less likely that messages will be dropped, at the expense
+    // of system resources
+    int qos_history_depth = 10
+    publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", qos_history_depth);
 
     RCLCPP_INFO(this->get_logger(), "Config: %d channels and %d samples", num_channels, num_samples);
     GT_SetDataReadyCallBack( serial_num.c_str(), &publish_data, (void*)(this)) ;

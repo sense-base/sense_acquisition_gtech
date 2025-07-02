@@ -31,7 +31,7 @@ jobs:
             # E: Unable to locate package (Solution: https://answers.launchpad.net/ubuntu/+source/icu/+question/818827)
           wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
           sudo dpkg -i libicu70_70.1-2_amd64.deb
-          wget https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01
+          wget --header 'Authorization: token GTEC_TOKEN' https://github.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/raw/refs/heads/main/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01
 
       - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3

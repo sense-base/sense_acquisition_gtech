@@ -1,7 +1,6 @@
 gtec_eeg_publisher:
   ros__parameters:
     num_channels: 8 # Number of EEG channels to acquire
-    num_samples: 32 # Number of samples per data block/message
     sampling_rate: 256 # Sampling frequency in Hz. Valid Values (32, 64, 128, 256, 512, 600, 1200, 2400, 4800)
     serial_num_: "UR-2017.06.12" # Serial number of the g.tec amplifier
     

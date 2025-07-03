@@ -9,8 +9,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
 
-unsigned char usr_buffer_master[ 32768 ];
-
 class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher();

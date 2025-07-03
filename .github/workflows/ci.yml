@@ -50,6 +50,8 @@ jobs:
             cd /usr/lib
             ln -s libgUSBampAPIso.so.1.16.01 libgUSBampAPIso.so.1.16 
             ldconfig /usr/lib
+            cd $HOME
+            echo $PWD
             echo ... done
         
       - name: Build ROS2 package(s)
@@ -57,6 +59,8 @@ jobs:
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
+        env:
+          GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
           package-name: gtec_eeg_publisher
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 

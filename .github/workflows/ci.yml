@@ -1,32 +1,71 @@
 name: CI
 
 on:
-  pull_request:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: ['**']
     tags:
       - '**'
 jobs:
   build_and_test_ros2:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Use the noble Ubuntu LTS version
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
+
     steps:
-      - name: Build and run tests
+
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Install libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install libusb-dev # libusb-dev is needed for libusb-1.0.so.0
+            # sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70 
+            # E: Unable to locate package (Solution: https://stackoverflow.com/questions/65250623)
+          wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb
+          sudo dpkg -i libicu66_66.1-2ubuntu2_amd64.deb
+            # sudo apt-get -y install libicu70 # libicu70 is needed for libicui18n.so.70 and libicuuc.so.70 
+            # E: Unable to locate package (Solution: https://answers.launchpad.net/ubuntu/+source/icu/+question/818827)
+          wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
+          sudo dpkg -i libicu70_70.1-2_amd64.deb
+
+      - name: Clone sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API repository
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          owner: 'sense-base'
+          repository: 'PRIVATE_gUSBamp-Linux-Driver-C-API'
+          access-token: ${{ secrets.GTEC_TOKEN }}
+      
+      - name: ⚙️ Install GTEC libraries
+        run: |
+            echo "Installing GTEC libraries..."
+            echo $PWD
+            rm -f /usr/lib/*usbamp*
+            rm -f /usr/lib/*USBamp*
+            mkdir -p /etc/gtec/filter_files/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/gAPI.h /usr/include/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01 /usr/lib/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/*.bin /etc/gtec/filter_files/
+            cd /usr/lib
+            ln -s libgUSBampAPIso.so.1.16.01 libgUSBampAPIso.so.1.16 
+            ldconfig /usr/lib
+            echo ... done
+        
+      - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
-        env: 
-          GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
-          package-name: sense_eeg
+          package-name: gtec_eeg_publisher
           target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
+          vcs-repo-file-url: https://raw.githubusercontent.com/sense-base/sense_acquisition_gtech/refs/heads/3-linking-dependent-libs/.github/workflows/deps.repos
+          skip-tests: true
           colcon-defaults: |
             {
               "build": {
-              "mixin": ["coverage-gcc"]
+                "mixin": ["coverage-gcc"],
+                "packages-up-to": ["eeg_msgs"]
               }
             }

@@ -106,8 +106,9 @@ find_package(eeg_msgs REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-add_executable(gtec_eeg_publisher src/sense_eeg.cpp)
-ament_target_dependencies(gtec_eeg_publisher rclcpp std_msgs eeg_msgs)
+
+add_executable(gtec_eeg_publisher sense_eeg.cpp)
+ament_target_dependencies(gtec_eeg_publisher rclcpp std_msgs eeg_msgs) 
 
 
 # Link to the gtec API

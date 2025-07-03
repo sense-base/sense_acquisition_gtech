@@ -17,7 +17,6 @@ void publish_data(void* eeg_publisher)
     GtecEEGPublisher* publisher = static_cast<GtecEEGPublisher*>(eeg_publisher);
     msg.header.stamp = publisher->now();
     msg.num_channels = publisher->num_channels;
-    msg.num_samples = publisher->num_samples;
     msg.sampling_rate = publisher->sampling_rate;
 
     // check the number of valid bytes in the device
@@ -30,7 +29,13 @@ void publish_data(void* eeg_publisher)
            , cnt_master, uchar_to_float);
        return;
     }
-    msg.data.resize(cnt_master / uchar_to_float);
+    
+    int total_samples = cnt_master / uchar_to_float;
+
+    // use num_samples to store the number of scans per channel
+    msg.num_samples = (total_samples) / publisher->num_channels;
+
+    msg.data.resize(total_samples);
 
     // I've used new and delete here because I struggled to get the call back working with anything other than
     // a plain unsigned char* buffer. I've put the acquisition code in a try ... catch to try and ensure we
@@ -61,7 +66,6 @@ void publish_data(void* eeg_publisher)
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
 {
     num_channels = 1;
-    num_samples = 2;
     sampling_rate = 256;
     serial_num = "UR-2017.06.12";
 
@@ -133,7 +137,7 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")
     int qos_history_depth = 10;
     publisher = this->create_publisher<eeg_msgs::msg::EEGBlock>("/eeg/raw", qos_history_depth);
 
-    RCLCPP_INFO(this->get_logger(), "Config: %d channels and %d samples", num_channels, num_samples);
+    RCLCPP_INFO(this->get_logger(), "Config: %d channels", num_channels);
     GT_SetDataReadyCallBack( serial_num.c_str(), &publish_data, (void*)(this)) ;
     RCLCPP_INFO(this->get_logger(), "Starting DAQ ... ");
     GT_StartAcquisition( serial_num.c_str() );

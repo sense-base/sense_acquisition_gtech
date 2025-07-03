@@ -20,17 +20,31 @@ void publish_data(void* eeg_publisher)
     msg.num_samples = publisher->num_samples;
     msg.sampling_rate = publisher->sampling_rate;
 
-    size_t cnt_master = GT_GetSamplesAvailable( publisher->serial_num.c_str() );
-    msg.data.reserve(cnt_master);
-
-    GT_GetData( publisher->serial_num.c_str(), usr_buffer_master, cnt_master);
-    float* float_buffer = reinterpret_cast<float *>(usr_buffer_master);
-
-    for (size_t i = 0; i < cnt_master / 4; ++i) {
-        msg.data.push_back(float_buffer[i]);
+    // check the number of valid bytes in the device
+    int cnt_master = GT_GetSamplesAvailable( publisher->serial_num.c_str() );
+    int uchar_to_float = sizeof(float)/sizeof(unsigned char);
+    if ( cnt_master % uchar_to_float != 0 )
+    {
+       RCLCPP_ERROR(publisher->get_logger(),
+           "Bytes available not compatable with float32 data type (%d not divisible by %d), aborting acquisition."
+           , cnt_master, uchar_to_float);
+       return;
     }
+    msg.data.resize(cnt_master / uchar_to_float);
+
+    unsigned char* buffer = new unsigned char [ cnt_master ];
+    int sample_count = GT_GetData( publisher->serial_num.c_str(), buffer, cnt_master);
+    if ( sample_count != cnt_master )
+    {
+        RCLCPP_WARN(publisher->get_logger(), "Incomplete data acquistion, expected %d samples, got %d samples.", cnt_master, sample_count);
+    }
+
+    // copy the buffer into the message body, casting uchar to float
+    std::memcpy (&(msg.data[0]) , reinterpret_cast<float *>(buffer), cnt_master);
+
     publisher->publisher->publish(msg);
     RCLCPP_DEBUG(publisher->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+    delete buffer;
 }
 
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher")

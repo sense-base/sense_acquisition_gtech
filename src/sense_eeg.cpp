@@ -127,6 +127,10 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher"),
     {
         RCLCPP_INFO(this->get_logger(), "Master:  Applied config master.");
     }
+    else
+    {
+	    throw std::invalid_argument( "Invalid configuration" );
+    }
 
     // Set the depth of the publisher message queue. I think a higher number here
     // will make it less likely that messages will be dropped, at the expense
@@ -153,7 +157,14 @@ GtecEEGPublisher::~GtecEEGPublisher()
 //------------------------------------------------------------------------------
 int main(int argc, char * argv[]) {
     rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<GtecEEGPublisher>());
+    try
+    {
+       rclcpp::spin(std::make_shared<GtecEEGPublisher>());
+    }
+    catch(const std::invalid_argument&)
+    {
+       return EXIT_FAILURE;
+    }
     rclcpp::shutdown();
     return 0;
 }

@@ -30,10 +30,10 @@ void publish_data(void* eeg_publisher)
        return;
     }
     
-    int total_samples = cnt_master / uchar_to_float
+    int total_samples = cnt_master / uchar_to_float;
 
     // use num_samples to store the number of scans per channel
-    msg.num_samples = (total_samples) / publisher->num_channels
+    msg.num_samples = (total_samples) / publisher->num_channels;
 
     msg.data.resize(total_samples);
 

@@ -32,18 +32,29 @@ void publish_data(void* eeg_publisher)
     }
     msg.data.resize(cnt_master / uchar_to_float);
 
+    // I've used new and delete here because I struggled to get the call back working with anything other than
+    // a plain unsigned char* buffer. I've put the acquisition code in a try ... catch to try and ensure we
+    // always call delete.
     unsigned char* buffer = new unsigned char [ cnt_master ];
-    int sample_count = GT_GetData( publisher->serial_num.c_str(), buffer, cnt_master);
-    if ( sample_count != cnt_master )
-    {
-        RCLCPP_WARN(publisher->get_logger(), "Incomplete data acquistion, expected %d samples, got %d samples.", cnt_master, sample_count);
+    try {
+        int sample_count = GT_GetData( publisher->serial_num.c_str(), buffer, cnt_master);
+        if ( sample_count != cnt_master )
+        {
+            RCLCPP_WARN(publisher->get_logger(), "Incomplete data acquistion, expected %d samples, got %d samples.", cnt_master, sample_count);
+        }
+
+        // copy the buffer into the message body, casting uchar to float
+        std::memcpy (&(msg.data[0]) , reinterpret_cast<float *>(buffer), cnt_master);
+
+        publisher->publisher->publish(msg);
+        RCLCPP_DEBUG(publisher->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
     }
-
-    // copy the buffer into the message body, casting uchar to float
-    std::memcpy (&(msg.data[0]) , reinterpret_cast<float *>(buffer), cnt_master);
-
-    publisher->publisher->publish(msg);
-    RCLCPP_DEBUG(publisher->get_logger(), "Published EEGBlock with %ld samples", msg.data.size());
+    catch (...) {
+        RCLCPP_ERROR(publisher->get_logger(),
+            "Exception thrown during acquisition block");
+        delete buffer;
+        return;
+    }
     delete buffer;
 }
 

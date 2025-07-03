@@ -49,23 +49,7 @@ GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher"),
     slave_mode(declare_parameter<bool>("slave_mode", false)),
     enable_sc(declare_parameter<bool>("enable_sc", false))
 
-{
-    //print out for testing
-    std::cout << "Loaded parameters:" << std::endl;
-    std::cout << "num_channels: " << num_channels << std::endl;
-    std::cout << "num_samples: " << num_samples << std::endl;
-    std::cout << "sampling_rate: " << sampling_rate << std::endl;
-    std::cout << "serial_num: " << serial_num << std::endl;
-
-    std::cout << "number_of_scans: " << number_of_scans << std::endl;
-    std::cout << "ao_frequency: " << ao_frequency << std::endl;
-    std::cout << "ao_amplitude: " << ao_amplitude << std::endl;
-    std::cout << "ao_offset: " << ao_offset << std::endl;
-    std::cout << "enable_trigger_line: " << enable_trigger_line << std::endl;
-    std::cout << "scan_dio: " << scan_dio << std::endl;
-    std::cout << "slave_mode: " << slave_mode << std::endl;
-    std::cout << "enable_sc: " << enable_sc << std::endl;
-    
+{   
     GT_ShowDebugInformation( GT_TRUE );
 
     const int sample_rate = sampling_rate;

@@ -38,7 +38,7 @@ ros2 launch gtec_eeg_publisher gtec_eeg_publisher_launch.py
 
 To modify the parameters, in the workspace run (for example):
 ```bash
-ros2 run gtec_eeg_publisher gtec_eeg_publisher --ros-args -p num_channels:=32 -p sampling_rate:=1024.0
+ros2 run gtec_eeg_publisher gtec_eeg_publisher --ros-args -p num_channels:=8 -p sampling_rate:=128
 ```
 
 ## Requesting access to the g.tec API

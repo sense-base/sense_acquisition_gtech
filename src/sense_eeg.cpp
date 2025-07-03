@@ -66,7 +66,7 @@ void publish_data(void* eeg_publisher)
 GtecEEGPublisher::GtecEEGPublisher() : Node("gtec_eeg_publisher"),
 
     num_channels(declare_parameter<int>("num_channels", 1)),
-    sampling_rate(declare_parameter<double>("sampling_rate", 256.0)),
+    sampling_rate(declare_parameter<int>("sampling_rate", 256.0)),
     serial_num(declare_parameter<std::string>("serial_num", "UR-2017.06.12")),
     
     number_of_scans(declare_parameter<int>("number_of_scans", GT_NOS_AUTOSET)),

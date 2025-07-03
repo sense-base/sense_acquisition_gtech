@@ -40,7 +40,7 @@ jobs:
       - name: ⚙️ Install GTEC libraries
         run: |
             echo "Installing GTEC libraries..."
-            echo $PWD
+            # echo $PWD /__w/sense_acquisition_gtech/sense_acquisition_gtech
             rm -f /usr/lib/*usbamp*
             rm -f /usr/lib/*USBamp*
             mkdir -p /etc/gtec/filter_files/
@@ -50,9 +50,8 @@ jobs:
             cd /usr/lib
             ln -s libgUSBampAPIso.so.1.16.01 libgUSBampAPIso.so.1.16 
             ldconfig /usr/lib
-            cd $HOME
-            echo $PWD
-            echo ... done
+            # cd $HOME
+            # echo $PWD /github/home
         
       - name: Build ROS2 package(s)
         uses: ros-tooling/action-ros-ci@0.4.3

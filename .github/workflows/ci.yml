@@ -30,7 +30,7 @@ jobs:
           wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
           sudo dpkg -i libicu70_70.1-2_amd64.deb
 
-      - name: :octocat: Clone sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API repository
+      - name: 🐙 Clone sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API repository
         uses: GuillaumeFalourd/clone-github-repo-action@v2.3
         with:
           owner: 'sense-base'

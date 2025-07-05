@@ -5,7 +5,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
 
-class GtecEEGPublisher : public rclcpp::Node {
+class GtecEEGPublisher: public rclcpp::Node {
 public:
     GtecEEGPublisher();
     ~GtecEEGPublisher();

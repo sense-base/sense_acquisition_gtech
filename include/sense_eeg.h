@@ -5,12 +5,12 @@
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
 
-class GtecEEGPublisher: public rclcpp::Node {
+class GtecEEGPublisher : public rclcpp::Node {
 public:
     GtecEEGPublisher();
     ~GtecEEGPublisher();
     int num_channels;
     float sampling_rate;
     std::string serial_num;
-    rclcpp::Publisher < eeg_msgs::msg::EEGBlock > ::SharedPtr publisher;
+    rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher;
 };

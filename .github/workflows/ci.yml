@@ -8,9 +8,17 @@ on:
       - '**'
 jobs:
   build_and_test_ros2:
+    # Define the container image(s) associated with each ROS distribution.
+    # Platforms are defined in REP 2000: https://ros.org/reps/rep-2000.html
     runs-on: ubuntu-24.04 # Use the noble Ubuntu LTS version
     container:
       image: rostooling/setup-ros-docker:ubuntu-noble-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ros_distribution:
+          - jazzy
+          - kilted
 
     steps:
 
@@ -62,7 +70,7 @@ jobs:
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
           package-name: gtec_eeg_publisher
-          target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
+          target-ros2-distro: ${{ matrix.ros_distribution }}
           vcs-repo-file-url: https://raw.githubusercontent.com/sense-base/sense_acquisition_gtech/refs/heads/3-linking-dependent-libs/.github/workflows/deps.repos
           skip-tests: false
           colcon-defaults: |

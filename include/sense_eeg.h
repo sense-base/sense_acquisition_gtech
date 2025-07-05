@@ -10,6 +10,7 @@ public:
   GtecEEGPublisher();
   ~GtecEEGPublisher();
   int num_channels;
+  int num_samples;
   float sampling_rate;
   std::string serial_num;
   rclcpp::Publisher < eeg_msgs::msg::EEGBlock > ::SharedPtr publisher;

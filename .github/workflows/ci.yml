@@ -20,7 +20,7 @@ jobs:
       - name: ⚙️ Install libraries
         run: |
           sudo apt-get update
-          sudo apt-get -y install libusb-dev # libusb-dev is needed for libusb-1.0.so.0
+          sudo apt-get -y install libusb-1.0-0-dev # libusb-1.0-0-dev is needed for libusb-1.0.so.0
             # sudo apt-get -y install libicu66 # libicu66 is needed for libicudata.so.70 
             # E: Unable to locate package (Solution: https://stackoverflow.com/questions/65250623)
           wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb

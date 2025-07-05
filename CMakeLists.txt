@@ -53,8 +53,8 @@ file(CREATE_LINK /usr/lib/libgUSBampAPIso.so.1.16.01
 # install the filter data files.
 file(MAKE_DIRECTORY /etc/gtec/filter_files)
 file(DOWNLOAD
-  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPfilter.bin 
-  /etc/gtec/filter_files/DSPfilter.bin 
+  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPfilter.bin
+  /etc/gtec/filter_files/DSPfilter.bin
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.
@@ -69,8 +69,8 @@ else()
 endif()
 
 file(DOWNLOAD
-	${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPNotchfilter.bin 
-	/etc/gtec/filter_files/DSPNotchfilter.bin 
+  ${GTEC_API_LOCATION}/gUSBampAPI_1_16_01/DSPNotchfilter.bin
+  /etc/gtec/filter_files/DSPNotchfilter.bin
   STATUS DOWNLOAD_STATUS USERPWD $ENV{GTEC_TOKEN})
 
 # Separate the returned status code, and error message.

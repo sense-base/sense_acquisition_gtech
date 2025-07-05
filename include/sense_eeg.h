@@ -6,12 +6,11 @@
 #include "eeg_msgs/msg/eeg_block.hpp"
 
 class GtecEEGPublisher: public rclcpp::Node {
-  GtecEEGPublisher();
-  ~GtecEEGPublisher();
-
-  int num_channels;
-  int num_samples;
-  float sampling_rate;
-  std::string serial_num;
-  rclcpp::Publisher<eeg_msgs::msg::EEGBlock>::SharedPtr publisher;
+public:
+    GtecEEGPublisher();
+    ~GtecEEGPublisher();
+    int num_channels;
+    float sampling_rate;
+    std::string serial_num;
+    rclcpp::Publisher < eeg_msgs::msg::EEGBlock > ::SharedPtr publisher;
 };

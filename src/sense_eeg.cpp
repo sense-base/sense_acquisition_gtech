@@ -45,8 +45,8 @@ void publish_data(void * eeg_publisher)
     int sample_count = GT_GetData(publisher->serial_num.c_str(), buffer, cnt_master);
     if (sample_count != cnt_master) {
       RCLCPP_WARN(
-        publisher->get_logger(), "Incomplete data acquistion, expected %d samples, got %d samples.", cnt_master,
-        sample_count);
+        publisher->get_logger(), "Incomplete data acquistion, expected %d samples, got %d samples.",
+        cnt_master, sample_count);
     }
 
     // copy the buffer into the message body, casting uchar to float

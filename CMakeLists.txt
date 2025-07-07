@@ -8,7 +8,9 @@ endif()
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Download some of our dependencies
+# Download dependencies. For g.tec drivers we use status codes to check for download success,
+# as these are likely to go wrong if there is an error with GTEC_TOKEN.
+# We use the EXPECTED_HASH option to check if the file is already present to avoid unnecessary repeat downloads.
 
 set(GTEC_API_LOCATION https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main)
 
@@ -88,7 +90,7 @@ else()
   message(FATAL_ERROR "Error occurred during download of gAPI.h: ${ERROR_MESSAGE}")
 endif()
 
-# put the boost dependencies for libgusbampapiso64 in the same directory
+# Get the boost dependencies for libgusbampapiso64
 set(BOOST_LOCATION https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7)
 file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 /usr/lib/libboost_date_time.so.1.58.0
   EXPECTED_HASH MD5=fdd94573385551381f38b23ea491ec0e)
@@ -106,10 +108,6 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(eeg_msgs REQUIRED)
-
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
 
 add_executable(gtec_eeg_publisher src/sense_eeg.cpp)
 ament_target_dependencies(gtec_eeg_publisher rclcpp std_msgs eeg_msgs)

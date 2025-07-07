@@ -46,6 +46,8 @@ The [ci.yml](.github/workflows/ci.yml) workflow installs libraries, builds ROS 2
 * Humble Hawksbill (May 2022 – May 2027) on Ubuntu Jammy (22.04)
 * Jazzy Jalisco (May 2024 – May 2029) on Ubuntu Noble (24.04)
 * Kilted Kaiju (May 2025 – November 2026) on Ubuntu Noble (24.04)
-See [https://github.com/sense-base/sense_acquisition_gtech/actions](github-actions) for outputs.
+
+You can view the CI/CD logs on [github-actions](https://github.com/sense-base/sense_acquisition_gtech/actions).
+If you'd like to test a new or previous version, simply edit ci.yml and update the list above in line with our [GitHub workflow contribution guidelines](https://github.com/sense-base/base/blob/main/CONTRIBUTING.md).
 
 Note: You might want to run [`ament_uncrustify --reformat <path_to_source_folders or file>`](https://docs.ros.org/en/rolling/p/ament_cmake_uncrustify/doc/index.html) to sort out any code style inconsistencies.

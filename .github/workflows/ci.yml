@@ -1,32 +1,96 @@
 name: CI
 
 on:
-  pull_request:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: ['**']
     tags:
       - '**'
 jobs:
   build_and_test_ros2:
+    # Define the container image(s) associated with each ROS distribution.
+    # Platforms are defined in REP 2000: https://ros.org/reps/rep-2000.html
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ros_distribution:
+          - humble
+          - jazzy
+          - kilted
+
+        include:
+          # Humble Hawksbill (May 2022 - May 2027) with Ubuntu Jammy (22.04)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-jammy-latest
+            ros_distribution: humble
+          # Jazzy Jalisco (May 2024 - May 2029) with Ubuntu Noble (24.04)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
+            ros_distribution: jazzy
+          # Kilted Kaiju (May 2025 - November 2026) with Ubuntu Noble (24.04)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
+            ros_distribution: kilted
+  
     container:
-      image: rostooling/setup-ros-docker:ubuntu-noble-latest
+      image: ${{ matrix.docker_image }}
+
     steps:
-      - name: Build and run tests
-        uses: ros-tooling/action-ros-ci@0.4.3
+
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+
+      - name: 🐧 Install libraries
+        run: |
+          sudo apt-get update
+          # libusb-1.0-0-dev is needed for libusb-1.0.so.0
+          sudo apt-get -y install libusb-1.0-0-dev
+
+          # libicu66 is needed for libicudata.so.70
+          wget http://security.ubuntu.com/ubuntu/pool/main/i/icu/libicu66_66.1-2ubuntu2_amd64.deb
+          sudo dpkg -i libicu66_66.1-2ubuntu2_amd64.deb
+
+          # libicu70 is needed for libicui18n.so.70 and libicuuc.so.70
+          wget http://archive.ubuntu.com/ubuntu/pool/main/i/icu/libicu70_70.1-2_amd64.deb
+          sudo dpkg -i libicu70_70.1-2_amd64.deb
+
+      - name: 🐙 Clone sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API repository
+        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+        with:
+          owner: 'sense-base'
+          repository: 'PRIVATE_gUSBamp-Linux-Driver-C-API'
+          access-token: ${{ secrets.GTEC_TOKEN }}
+      
+      - name: ⚙️ Install GTEC libraries
+        run: |
+            echo "Installing GTEC libraries..."
+            # echo $PWD /__w/sense_acquisition_gtech/sense_acquisition_gtech
+            rm -f /usr/lib/*usbamp*
+            rm -f /usr/lib/*USBamp*
+            mkdir -p /etc/gtec/filter_files/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/gAPI.h /usr/include/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/libgUSBampAPIso.so.1.16.01 /usr/lib/
+            cp PRIVATE_gUSBamp-Linux-Driver-C-API/gUSBampAPI_1_16_01/*.bin /etc/gtec/filter_files/
+            cd /usr/lib
+            ln -s libgUSBampAPIso.so.1.16.01 libgUSBampAPIso.so.1.16 
+            ldconfig /usr/lib
+            # cd $HOME
+            # echo $PWD /github/home
+        
+      - name: 🤖 Build ROS2 package(s) and run tests
+        uses: ros-tooling/action-ros-ci@v0.4
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions
-        env: 
+        env:
           GTEC_TOKEN: ${{ secrets.GTEC_TOKEN }}
         with:
-          package-name: sense_eeg
-          target-ros2-distro: jazzy # I tried humble but didn't seem to work with ament 
+          package-name: gtec_eeg_publisher
+          target-ros2-distro: ${{ matrix.ros_distribution }}
+          vcs-repo-file-url: https://raw.githubusercontent.com/sense-base/sense_acquisition_gtech/refs/heads/main/.github/workflows/deps.repos
+          skip-tests: false
           colcon-defaults: |
             {
               "build": {
-              "mixin": ["coverage-gcc"]
+                "mixin": ["coverage-gcc"],
+                "packages-up-to": ["eeg_msgs"]
               }
             }

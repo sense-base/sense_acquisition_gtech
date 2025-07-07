@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-//Copyright 2026 University College London. Partly derived from main.cpp expample file
+//Copyright 2025 University College London. Partly derived from main.cpp expample file
 //courtesy g.tec Copyright (C) 2014-2016 g.tec medical engineering GmbH.
 
 #ifndef SENSE_EEG_H
@@ -9,7 +9,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "eeg_msgs/msg/eeg_block.hpp"
 
-class GtecEEGPublisher : public rclcpp::Node {
+class GtecEEGPublisher: public rclcpp::Node {
 public:
     GtecEEGPublisher();
     ~GtecEEGPublisher();
@@ -32,4 +32,3 @@ private:
 };
 
 #endif // SENSE_EEG_H
-

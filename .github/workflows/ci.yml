@@ -16,11 +16,15 @@ jobs:
       matrix:
         ros_distribution:
           - jazzy
+          - kilted
 
         include:
           # Jazzy Jalisco
           - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
             ros_distribution: jazzy
+          # Kilted Kaiju
+          - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
+            ros_distribution: kilted
   
     container:
       image: ${{ matrix.docker_image }}

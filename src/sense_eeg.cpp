@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-//Copyright 2026 University College London. Partly derived from main.cpp expample file
+//Copyright 2025 University College London. Partly derived from main.cpp expample file
 //courtesy g.tec Copyright (C) 2014-2016 g.tec medical engineering GmbH.
 
 #include <iostream>

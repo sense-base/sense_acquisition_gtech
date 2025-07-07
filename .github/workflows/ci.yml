@@ -61,8 +61,8 @@ jobs:
             # cd $HOME
             # echo $PWD /github/home
         
-      - name: 🤖 Build ROS2 package(s)
-        uses: ros-tooling/action-ros-ci@0.4.3
+      - name: 🤖 Build ROS2 package(s) and run tests
+        uses: ros-tooling/action-ros-ci@0.7
         # add an environment variable containing a personal access token for
         # download access to gtec drivers. GTEC_TOKEN secret may need adding or updating.
         # https://github.com/sense-base/sense_acquisition_gtech/settings/secrets/actions

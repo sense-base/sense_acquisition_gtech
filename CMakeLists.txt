@@ -90,11 +90,16 @@ endif()
 
 # put the boost dependencies for libgusbampapiso64 in the same directory
 set(BOOST_LOCATION https://github.com/sense-base/boost_1_58_0/releases/download/0.0.7)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 /usr/lib/libboost_date_time.so.1.58.0 EXPECTED_HASH MD5=fdd94573385551381f38b23ea491ec0e)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_regex.so.1.58.0 /usr/lib/libboost_regex.so.1.58.0 EXPECTED_HASH MD5=3ae740bdce7155732ddd445c8359eb0e)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_signals.so.1.58.0 /usr/lib/libboost_signals.so.1.58.0 EXPECTED_HASH MD5=45e94dcfc82b223f10ec06946e6a387c)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_system.so.1.58.0 /usr/lib/libboost_system.so.1.58.0 EXPECTED_HASH MD5=dff3891848d683c62cb1f06ca70718a2)
-file(DOWNLOAD ${BOOST_LOCATION}/libboost_thread.so.1.58.0 /usr/lib/libboost_thread.so.1.58.0 EXPECTED_HASH MD5=73739077c05260017a6abffb39e744d0)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_date_time.so.1.58.0 /usr/lib/libboost_date_time.so.1.58.0
+  EXPECTED_HASH MD5=fdd94573385551381f38b23ea491ec0e)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_regex.so.1.58.0 /usr/lib/libboost_regex.so.1.58.0
+  EXPECTED_HASH MD5=3ae740bdce7155732ddd445c8359eb0e)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_signals.so.1.58.0 /usr/lib/libboost_signals.so.1.58.0
+  EXPECTED_HASH MD5=45e94dcfc82b223f10ec06946e6a387c)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_system.so.1.58.0 /usr/lib/libboost_system.so.1.58.0
+  EXPECTED_HASH MD5=dff3891848d683c62cb1f06ca70718a2)
+file(DOWNLOAD ${BOOST_LOCATION}/libboost_thread.so.1.58.0 /usr/lib/libboost_thread.so.1.58.0
+  EXPECTED_HASH MD5=73739077c05260017a6abffb39e744d0)
 
 # find dependencies
 find_package(ament_cmake REQUIRED)

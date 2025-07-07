@@ -36,6 +36,11 @@ source install/setup.bash
 ros2 launch gtec_eeg_publisher gtec_eeg_publisher_launch.py
 ```
 
+To modify the parameters, in the workspace run (for example):
+```bash
+ros2 run gtec_eeg_publisher gtec_eeg_publisher --ros-args -p num_channels:=8 -p sampling_rate:=128
+```
+
 ## Requesting access to the g.tec API
 To run or develop this code you will need access to the gtec API (header file and library). g.tec have given us permission to distribute these files but have asked that
 we keep track of who is using them and for what. We are currently managing access to these files using a private GitHub repository and personal access tokens. If you would 

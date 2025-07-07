@@ -1,0 +1,17 @@
+gtec_eeg_publisher:
+  ros__parameters:
+    num_channels: 8 # Number of EEG channels to acquire
+    sampling_rate: 256 # Sampling frequency in Hz. Valid Values (32, 64, 128, 256, 512, 600, 1200, 2400, 4800)
+    serial_num: "UR-2017.06.12" # Serial number of the g.tec amplifier
+    
+    # analog_out_config
+    ao_frequency: 10 # Frequency of the analog output in Hz [1 ... 100]
+    ao_amplitude: 200 # Amplitude of the analog output in mV [-­250 ... 250]
+    ao_offset: 0 # Offset of the analog output in mV [-­200 ... 200]
+    
+    # usbamp_config
+    number_of_scans: -1 # Number of scans to acquire (-1 = GT_NOS_AUTOSET)
+    enable_trigger_line: false # gt_bool = unsigned int ( set 1 = true based on eegdev) a separate (phyical trigger button) Probably not required as we can set up a separate ros node.
+    scan_dio: false # gt_bool. eegdev sets to true (digital input / output) There are 2 of these on the devicve
+    slave_mode: false # gt_bool = unsigned int ( set 0 = false based on eegdev) probably useful if you want to stack multiple units (more than 16 channels) Not necessary
+    enable_sc: false # Enable short cut, gt_bool = unsigned int ( set 0 = false based on eegdev) 

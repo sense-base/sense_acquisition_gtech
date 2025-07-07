@@ -2,7 +2,7 @@ gtec_eeg_publisher:
   ros__parameters:
     num_channels: 8 # Number of EEG channels to acquire
     sampling_rate: 256 # Sampling frequency in Hz. Valid Values (32, 64, 128, 256, 512, 600, 1200, 2400, 4800)
-    serial_num_: "UR-2017.06.12" # Serial number of the g.tec amplifier
+    serial_num: "UR-2017.06.12" # Serial number of the g.tec amplifier
     
     # analog_out_config
     ao_frequency: 10 # Frequency of the analog output in Hz [1 ... 100]

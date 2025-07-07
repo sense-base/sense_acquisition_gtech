@@ -15,14 +15,18 @@ jobs:
       fail-fast: false
       matrix:
         ros_distribution:
+          - humble
           - jazzy
           - kilted
 
         include:
-          # Jazzy Jalisco
+          # Humble Hawksbill (May 2022 - May 2027) with Ubuntu Jammy (22.04)
+          - docker_image: rostooling/setup-ros-docker:ubuntu-jammy-latest
+            ros_distribution: humble
+          # Jazzy Jalisco (May 2024 - May 2029) with Ubuntu Noble (24.04)
           - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
             ros_distribution: jazzy
-          # Kilted Kaiju
+          # Kilted Kaiju (May 2025 - November 2026) with Ubuntu Noble (24.04)
           - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
             ros_distribution: kilted
   

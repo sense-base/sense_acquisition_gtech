@@ -10,15 +10,20 @@ jobs:
   build_and_test_ros2:
     # Define the container image(s) associated with each ROS distribution.
     # Platforms are defined in REP 2000: https://ros.org/reps/rep-2000.html
-    runs-on: ubuntu-24.04 # Use the noble Ubuntu LTS version
-    container:
-      image: rostooling/setup-ros-docker:ubuntu-noble-latest
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         ros_distribution:
           - jazzy
-          - kilted
+
+        include:
+          # Jazzy Jalisco
+          - docker_image: rostooling/setup-ros-docker:ubuntu-noble-latest
+            ros_distribution: jazzy
+  
+    container:
+      image: ${{ matrix.docker_image }}
 
     steps:
 

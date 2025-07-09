@@ -12,6 +12,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # as these are likely to go wrong if there is an error with GTEC_TOKEN.
 # We use the EXPECTED_HASH option to check if the file is already present to avoid unnecessary repeat downloads.
 
+if(NOT DEFINED ENV{GTEC_TOKEN})
+  message(FATAL_ERROR "Environment variable GTEC_TOKEN is not defined. Run `export GTEC_TOKEN=...` and try again."
+  " See README for more instructions.")
+endif()
+
 set(GTEC_API_LOCATION https://raw.githubusercontent.com/sense-base/PRIVATE_gUSBamp-Linux-Driver-C-API/refs/heads/main)
 
 file(DOWNLOAD
